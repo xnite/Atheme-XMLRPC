@@ -7,10 +7,10 @@
  * Time: 4:48 PM
  */
 
-require_once("services/Nickserv.php");
-require_once("services/Chanserv.php");
-require_once("services/Memoserv.php");
-require_once("services/Hostserv.php");
+require_once(dirname(__FILE__)."/services/Nickserv.php");
+require_once(dirname(__FILE__)."/services/Chanserv.php");
+require_once(dirname(__FILE__)."/services/Memoserv.php");
+require_once(dirname(__FILE__)."/services/Hostserv.php");
 
 class Atheme
 {
