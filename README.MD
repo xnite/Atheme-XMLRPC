@@ -1,5 +1,5 @@
 # NOTICE
-**This is not a full implementation of the Atheme XMLRPC API.** Pull Requests are welcome. :)
+**This is not a full implementation of the Atheme XMLRPC.** Pull Requests are welcome. :)
 
 # Getting Started
 ```PHP
