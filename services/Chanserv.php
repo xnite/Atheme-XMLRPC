@@ -32,6 +32,24 @@ class Chanserv
 		return $response;
 	}
 
+	public function akickAdd($channel, $user_mask, $time, $reason)
+	{
+		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","akick", $channel, "add", $user_mask, $time, $reason));
+		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
+		$file = file_get_contents($this->xmlrpc_url, false, $context);
+		$response = xmlrpc_decode($file);
+		return $response;
+	}
+
+	public function akickDel($channel, $user_mask)
+	{
+		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","akick", $channel, "del", $user_mask));
+		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
+		$file = file_get_contents($this->xmlrpc_url, false, $context);
+		$response = xmlrpc_decode($file);
+		return $response;
+	}
+
 	public function info($channel = null)
 	{
 		if($channel == null)
@@ -46,6 +64,7 @@ class Chanserv
 		foreach($response as $line)
 		{
 			if(preg_match("/^Founder([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['founder']=$matches[3]; }
+			if(preg_match("/^Successor([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['successor']=$matches[3]; }
 			if(preg_match("/^Registered([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['registered']=$matches[3]; }
 			if(preg_match("/^Mode lock([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['mlock']=$matches[3]; }
 			if(preg_match("/^Entrymsg([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['entrymsg']=$matches[3]; }
