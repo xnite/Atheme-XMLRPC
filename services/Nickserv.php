@@ -8,6 +8,7 @@
  */
 class Nickserv
 {
+	public $services = array();
 	public function __construct($xmlrpc_path)
 	{
 		$this->xmlrpc_url = $xmlrpc_path;
