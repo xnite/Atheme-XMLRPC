@@ -1,10 +1,10 @@
 <?php
 require_once("../Atheme-XMLRPC.php");
 $Atheme = new Atheme("http://127.0.0.1:8080/xmlrpc");
-$Auth = $Atheme->nickserv->identify("nickname", "password");
+$Auth = $Atheme->auth("nickname", "password");
 switch($Auth->getStatusCode())
 {
-	case 200:
+	case 0:
 		// Authentication was successful
 		$token = $Auth->getReply();
 		echo "Authentication succeeded!\n";
@@ -14,8 +14,15 @@ switch($Auth->getStatusCode())
 		print_r($Atheme->nickserv->info("nickname"));
 		$Atheme->nickserv->logout();
 		break;
-	case 401:
-		//Authentication failed!
+	case 1:
+		echo "Insufficient parameters";
+		break;
+	case 3:
+		echo "Unknown user";
+		break;
+	case 5:
+		echo "Validation failed";
+		break;
 	default:
 		echo "Authentication failed! :(\n";
 		break;
