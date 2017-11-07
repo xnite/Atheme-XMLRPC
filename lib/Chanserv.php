@@ -25,7 +25,35 @@ class Chanserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			if(isset($response['faultCode']))
+			{
+				switch($response['faultCode'])
+				{
+					case 1:
+						//insufficient parameters
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 3:
+						// account is not registered
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 5:
+						// invalid username or password
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 6:
+						// account is frozen
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					default:
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+				}
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function akickAdd($channel, $user_mask, $time, $reason)
@@ -34,7 +62,35 @@ class Chanserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			if(isset($response['faultCode']))
+			{
+				switch($response['faultCode'])
+				{
+					case 1:
+						//insufficient parameters
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 3:
+						// account is not registered
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 5:
+						// invalid username or password
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 6:
+						// account is frozen
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					default:
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+				}
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function akickDel($channel, $user_mask)
@@ -43,7 +99,35 @@ class Chanserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			if(isset($response['faultCode']))
+			{
+				switch($response['faultCode'])
+				{
+					case 1:
+						//insufficient parameters
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 3:
+						// account is not registered
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 5:
+						// invalid username or password
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 6:
+						// account is frozen
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					default:
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+				}
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function info($channel)
@@ -51,41 +135,100 @@ class Chanserv
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","info", $channel));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
-		$response = explode("\n", xmlrpc_decode($file));
-		$return = array();
-		foreach($response as $line)
+		$response = xmlrpc_decode($file);
+		if(is_string($response))
 		{
-			if(preg_match("/^Founder([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['founder']=$matches[3]; }
-			if(preg_match("/^Successor([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['successor']=$matches[3]; }
-			if(preg_match("/^Registered([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['registered']=$matches[3]; }
-			if(preg_match("/^Mode lock([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['mlock']=$matches[3]; }
-			if(preg_match("/^Entrymsg([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['entrymsg']=$matches[3]; }
-			if(preg_match("/^Flags([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['flags']=$matches[3]; }
-			if(preg_match("/^Prefix([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['prefix']=$matches[3]; }
-			if(preg_match("/^AntiFlood([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['antiflood']=$matches[3]; }
+			$response = explode("\n", $response);
+			$return = array();
+			foreach($response as $line)
+			{
+				if(preg_match("/^Founder([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['founder']=$matches[3]; }
+				if(preg_match("/^Successor([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['successor']=$matches[3]; }
+				if(preg_match("/^Registered([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['registered']=$matches[3]; }
+				if(preg_match("/^Mode lock([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['mlock']=$matches[3]; }
+				if(preg_match("/^Entrymsg([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['entrymsg']=$matches[3]; }
+				if(preg_match("/^Flags([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['flags']=$matches[3]; }
+				if(preg_match("/^Prefix([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['prefix']=$matches[3]; }
+				if(preg_match("/^AntiFlood([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['antiflood']=$matches[3]; }
+			}
+			return new ReplyObject($return, 0);
+		} elseif(is_array($response))
+		{
+			if(isset($response['faultCode']))
+			{
+				switch($response['faultCode'])
+				{
+					case 1:
+						//insufficient parameters
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 3:
+						// account is not registered
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 5:
+						// invalid username or password
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 6:
+						// account is frozen
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					default:
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+				}
+			}
 		}
-		return new ReplyObject($return, 200, "CS_FOUND_CHANINFO");
+		return new ReplyObject($response, 0);
 	}
 	public function akickList($channel)
 	{
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","akick", "list", $channel));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
-		$response = explode("\n", xmlrpc_decode($file));
-		$return = array();
-		foreach($response as $line)
+		$response = xmlrpc_decode($file);
+
+		if(is_string($response))
 		{
-			if(preg_match("/^([0-9]+): (.*?) \((.*?)\) \[setter: (.*?), expires: (.*?), modified: (.*?)\]$/i", $line, $m)) {
-				array_push($return, array(
-					'id'=>$m[1],
-					'hostmask'=>$m[2],
-					'reason'=>$m[3],
-					'setter'=>$m[4],
-					'expire'=>$m[5],
-					'modified'=>$m[6]
-				));
+			$response = explode("\n", $response);
+			$return = array();
+			foreach ($response as $line)
+			{
+				if (preg_match("/^([0-9]+): (.*?) \((.*?)\) \[setter: (.*?), expires: (.*?), modified: (.*?)\]$/i", $line, $m))
+				{
+					array_push($return, array('id' => $m[1], 'hostmask' => $m[2], 'reason' => $m[3], 'setter' => $m[4], 'expire' => $m[5], 'modified' => $m[6]));
+				}
+			}
+			return new ReplyObject($return, 0);
+		} elseif(is_array($response))
+		{
+			if(isset($response['faultCode']))
+			{
+				switch($response['faultCode'])
+				{
+					case 1:
+						//insufficient parameters
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 3:
+						// account is not registered
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 5:
+						// invalid username or password
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					case 6:
+						// account is frozen
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+					default:
+						return new ReplyObject($response['faultString'], $response['faultCode']);
+						break;
+				}
 			}
 		}
-		return $return;
+		return new ReplyObject($response, 0);
 	}
 }
