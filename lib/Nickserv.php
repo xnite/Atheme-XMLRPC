@@ -99,7 +99,7 @@ class Nickserv
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"NickServ","info", $account));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
-		$response = explode("\n", xmlrpc_decode($file));
+		$response = xmlrpc_decode($file);
 		if(is_array($response))
 		{
 			switch($response['faultCode'])
@@ -108,6 +108,7 @@ class Nickserv
 					return new ReplyObject($response['faultString'], $response['faultCode']);
 			}
 		}
+		$response = explode("\n", $response);
 		$return = array();
 		foreach($response as $line)
 		{
