@@ -7,10 +7,11 @@
  * Time: 4:48 PM
  */
 
-require_once(dirname(__FILE__)."/services/Nickserv.php");
-require_once(dirname(__FILE__)."/services/Chanserv.php");
-require_once(dirname(__FILE__)."/services/Memoserv.php");
-require_once(dirname(__FILE__)."/services/Hostserv.php");
+require_once(dirname(__FILE__) . "/lib/Nickserv.php");
+require_once(dirname(__FILE__) . "/lib/Chanserv.php");
+require_once(dirname(__FILE__) . "/lib/Memoserv.php");
+require_once(dirname(__FILE__) . "/lib/Hostserv.php");
+require_once(dirname(__FILE__) . "/lib/ReplyObject.php");
 
 class Atheme
 {
@@ -38,5 +39,28 @@ class Atheme
 		}
 		$this->xmlrpc_url = $xmlrpc_path;
 		$this->nickserv = new Nickserv($this->xmlrpc_url);
+	}
+
+	public function auth($username, $password)
+	{
+		$token = $this->nickserv->identify($username,$password);
+		if(is_string($token))
+		{
+			$this->authToken=$token;
+			$this->username=$this->nickserv->username;
+			$this->chanserv = new Chanserv($this->xmlrpc_url);
+			$this->chanserv->authToken = $token;
+			$this->chanserv->username = $username;
+			$this->hostserv = new Hostserv($this->xmlrpc_url);
+			$this->hostserv->authToken = $token;
+			$this->hostserv->username = $username;
+			$this->memoserv = new Memoserv($this->xmlrpc_url);
+			$this->memoserv->authToken = $token;
+			$this->memoserv->username = $username;
+			return new ReplyObject($this->authToken, 200, "NS_IDENTIFY_OK");
+		} else {
+			return new ReplyObject(null, 401, "NS_IDENTIFY_FAIL");
+		}
+		return new ReplyObject(null, 500, "UNKNOWN_ERROR");
 	}
 }

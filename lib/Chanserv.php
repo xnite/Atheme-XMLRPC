@@ -19,12 +19,8 @@ class Chanserv
 		}
 	}
 
-	public function register($channel = null)
+	public function register($channel)
 	{
-		if($channel == null)
-		{
-			throw new exception("Missing one or more required fields.");
-		}
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","register", $channel));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
@@ -50,12 +46,8 @@ class Chanserv
 		return $response;
 	}
 
-	public function info($channel = null)
+	public function info($channel)
 	{
-		if($channel == null)
-		{
-			throw new exception("Missing one or more required fields.");
-		}
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","info", $channel));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
@@ -72,14 +64,10 @@ class Chanserv
 			if(preg_match("/^Prefix([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['prefix']=$matches[3]; }
 			if(preg_match("/^AntiFlood([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['antiflood']=$matches[3]; }
 		}
-		return $return;
+		return new ReplyObject($return, 200, "CS_FOUND_CHANINFO");
 	}
-	public function akickList($channel = null)
+	public function akickList($channel)
 	{
-		if($channel == null)
-		{
-			throw new exception("Missing one or more required fields.");
-		}
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"ChanServ","akick", "list", $channel));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
