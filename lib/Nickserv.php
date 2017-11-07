@@ -32,7 +32,15 @@ class Nickserv
 		$response = xmlrpc_decode($file);
 		$this->username = $username;
 		$this->authToken=$response;
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function logout()
@@ -41,7 +49,15 @@ class Nickserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function set($key, $value)
@@ -50,7 +66,15 @@ class Nickserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function setMeta($key, $value)
@@ -59,7 +83,15 @@ class Nickserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function info($account)
@@ -68,6 +100,14 @@ class Nickserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = explode("\n", xmlrpc_decode($file));
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
 		$return = array();
 		foreach($response as $line)
 		{
@@ -82,11 +122,12 @@ class Nickserv
 			if(preg_match("/^Channels([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['channels']=$matches[3]; }
 			if(preg_match("/^Metadata([\s]+):([\s]+)(.*?)$/i", $line, $matches)) { $return['metadata']=$matches[3]; }
 		}
-		return $return;
+		return new ReplyObject($return, 0);
 	}
 	public function certList()
 	{
 		/*
+		 * PLACEHOLDER!!
 		 * Fingerprint list for XXXX:
 		 * - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		 * - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

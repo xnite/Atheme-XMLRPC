@@ -11,10 +11,9 @@ class ReplyObject
 	private $status;
 	private $string;
 	private $message;
-	public function __construct($reply, $status_code = 200, $status_message = null)
+	public function __construct($reply, $status_code = 0)
 	{
 		$this->status = $status_code;
-		$this->message = $status_message;
 		$this->string = $reply;
 		$this->message = $reply;
 		return $this;

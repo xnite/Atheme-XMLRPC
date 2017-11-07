@@ -57,9 +57,9 @@ class Atheme
 			$this->memoserv = new Memoserv($this->xmlrpc_url);
 			$this->memoserv->authToken = $token;
 			$this->memoserv->username = $username;
-			return new ReplyObject($this->authToken, 200, "NS_IDENTIFY_OK");
+			return new ReplyObject($this->authToken, 0, "NS_IDENTIFY_OK");
 		} else {
-			return new ReplyObject(null, 401, "NS_IDENTIFY_FAIL");
+			return new ReplyObject($token['faultString'], $token['faultCode']);
 		}
 		return new ReplyObject(null, 500, "UNKNOWN_ERROR");
 	}
