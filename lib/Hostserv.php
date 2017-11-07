@@ -19,30 +19,38 @@ class Hostserv
 		}
 	}
 
-	public function request($hostname = null)
+	public function request($hostname)
 	{
-		if($hostname == null)
-		{
-			throw new exception("Missing one or more required fields.");
-		}
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"HostServ","request", $hostname));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
-	public function take($vhost = null)
+	public function take($vhost)
 	{
-		if($vhost == null)
-		{
-			throw new exception("Missing one or more required fields.");
-		}
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"HostServ","take", $vhost));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 
 	public function offerList()
@@ -51,6 +59,14 @@ class Hostserv
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
-		return $response;
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
 	}
 }
