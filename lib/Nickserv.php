@@ -62,7 +62,7 @@ class Nickserv
 
 	public function register($nickname, $email, $password)
 	{
-		$request = xmlrpc_encode_request("atheme.command", array("*", "*",$this->source_ip,"nickserv", "REGISTER", "Nickname", $password, $email));
+		$request = xmlrpc_encode_request("atheme.command", array("*", "*",$this->source_ip,"nickserv", "REGISTER", $nickname, $password, $email));
 		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
 		$file = file_get_contents($this->xmlrpc_url, false, $context);
 		$response = xmlrpc_decode($file);
