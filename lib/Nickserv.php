@@ -60,6 +60,23 @@ class Nickserv
 		return new ReplyObject($response, 0);
 	}
 
+	public function register($nickname, $email, $password)
+	{
+		$request = xmlrpc_encode_request("atheme.command", array("*", "*",$this->source_ip,"nickserv", "REGISTER", "Nickname", $password, $email));
+		$context = stream_context_create(array('http' => array('method' => "POST", 'header' => "Content-Type: text/xml", 'content' => $request)));
+		$file = file_get_contents($this->xmlrpc_url, false, $context);
+		$response = xmlrpc_decode($file);
+		if(is_array($response))
+		{
+			switch($response['faultCode'])
+			{
+				default:
+					return new ReplyObject($response['faultString'], $response['faultCode']);
+			}
+		}
+		return new ReplyObject($response, 0);
+	}
+
 	public function set($key, $value)
 	{
 		$request = xmlrpc_encode_request("atheme.command", array($this->authToken,$this->username,$this->source_ip,"NickServ","set", $key, $value));
