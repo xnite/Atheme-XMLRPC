@@ -46,20 +46,20 @@ class Atheme
 		$Auth = $this->nickserv->identify($username,$password);
 		if($Auth->getStatusCode() == 0)
 		{
-			$this->authToken=$token;
+			$this->authToken=$Auth->getReply();
 			$this->username=$this->nickserv->username;
 			$this->chanserv = new Chanserv($this->xmlrpc_url);
-			$this->chanserv->authToken = $token;
+			$this->chanserv->authToken = $Auth->getReply();
 			$this->chanserv->username = $username;
 			$this->hostserv = new Hostserv($this->xmlrpc_url);
-			$this->hostserv->authToken = $token;
+			$this->hostserv->authToken = $Auth->getReply();
 			$this->hostserv->username = $username;
 			$this->memoserv = new Memoserv($this->xmlrpc_url);
-			$this->memoserv->authToken = $token;
+			$this->memoserv->authToken = $Auth->getReply();
 			$this->memoserv->username = $username;
 			return new ReplyObject($this->authToken, 0, "NS_IDENTIFY_OK");
 		} else {
-			return new ReplyObject($token['faultString'], $token['faultCode']);
+			return new ReplyObject($Auth['faultString'], $Auth['faultCode']);
 		}
 		return new ReplyObject("An unknown error occurred!", 9);
 	}
