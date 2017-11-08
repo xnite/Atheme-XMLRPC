@@ -58,9 +58,9 @@ class Atheme
 			$this->memoserv->authToken = $token;
 			$this->memoserv->username = $username;
 			return new ReplyObject($this->authToken, 0, "NS_IDENTIFY_OK");
-		} else {
+		} elseif(is_array($token)) {
 			return new ReplyObject($token['faultString'], $token['faultCode']);
 		}
-		return new ReplyObject(null, 500, "UNKNOWN_ERROR");
+		return new ReplyObject("An unknown error occurred!", 9);
 	}
 }
