@@ -43,8 +43,8 @@ class Atheme
 
 	public function auth($username, $password)
 	{
-		$token = $this->nickserv->identify($username,$password);
-		if(is_string($token))
+		$Auth = $this->nickserv->identify($username,$password);
+		if($Auth->getStatusCode() == 0)
 		{
 			$this->authToken=$token;
 			$this->username=$this->nickserv->username;
@@ -58,7 +58,7 @@ class Atheme
 			$this->memoserv->authToken = $token;
 			$this->memoserv->username = $username;
 			return new ReplyObject($this->authToken, 0, "NS_IDENTIFY_OK");
-		} elseif(is_array($token)) {
+		} else {
 			return new ReplyObject($token['faultString'], $token['faultCode']);
 		}
 		return new ReplyObject("An unknown error occurred!", 9);
